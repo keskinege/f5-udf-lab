@@ -27,16 +27,23 @@ subjects:
   namespace: kube-system
 ---
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
   name: update-bigip-mac
   namespace: kube-system
 spec:
-  backoffLimit: 1
-  template:
+  schedule: "*/5 * * * *"   # every 5 minutes
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
     spec:
-      serviceAccountName: bigip-mac-updater
-      restartPolicy: Never
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 1
+      template:
+        spec:
+          serviceAccountName: bigip-mac-updater
+          restartPolicy: Never
       containers:
       - name: updater
         image: bitnami/kubectl:latest
