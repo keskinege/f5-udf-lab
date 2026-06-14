@@ -68,7 +68,7 @@ spec:
             - -ec
             - |
 
-              MAC=$(curl -sk -u '${BIGIP_USER}:${BIGIP_PASS}' -H "Content-Type: application/json" \
+              MAC=$(curl -sk -u "${BIGIP_USER}:${BIGIP_PASS}" -H "Content-Type: application/json" \
                   -X POST "https://10.1.1.4/mgmt/tm/util/bash" \
                   -d '{"command":"run","utilCmdArgs":"-c \"tmsh show net tunnels tunnel flannel_vxlan all-properties\""}' | jq -r '.commandResult' \
                   | grep -oiE '([0-9a-f]{2}:){5}[0-9a-f]{2}' | head -n1)
