@@ -81,7 +81,7 @@ spec:
               echo "Retrieved MAC: $MAC"
 
               kubectl annotate node bigip1 \
-                flannel.alpha.coreos.com/public-ip-overwrite="$MAC" \
+                flannel.alpha.coreos.com/backend-data="{\"VtepMAC\":\"$MAC\"}" \
                 --overwrite
 
               echo "Node annotation updated successfully"
