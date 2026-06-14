@@ -67,7 +67,7 @@ spec:
              
 
               MAC=$(curl -sk -u "${BIGIP_USER}:${BIGIP_PASS}" \
-                "https://10.1.1.4/mgmt/tm/net/tunnels/tunnel/~Common~flannel_vxlan/stats" \
+                "https://10.1.1.4/mgmt/tm/net/tunnels/tunnel/~Common~flannel_vxlan/stats" -k \
                 | jq -r '.entries[]?.nestedStats.entries.macAddress.description')
 
               if [ -z "$MAC" ] || [ "$MAC" = "null" ]; then
