@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: bigip1
+  annotations:
+    flannel.alpha.coreos.com/backend-data: '{"VtepMAC":"<BIG-IP-VTEP-MAC>"}'
+    flannel.alpha.coreos.com/backend-type: "vxlan"
+    flannel.alpha.coreos.com/kube-subnet-manager: "true"
+    flannel.alpha.coreos.com/public-ip: "10.1.20.10"
+spec:
+  podCIDR: "10.244.255.0/24"

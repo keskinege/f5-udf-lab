@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bigip-mac-updater
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bigip-mac-updater
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: bigip-mac-updater
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bigip-mac-updater
+subjects:
+- kind: ServiceAccount
+  name: bigip-mac-updater
+  namespace: flux-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: update-bigip-mac
+  namespace: flux-system
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      serviceAccountName: bigip-mac-updater
+      restartPolicy: Never
+      containers:
+      - name: updater
+        image: bitnami/kubectl:latest
+        env:
+       
+        - name: BIGIP_USER
+          valueFrom:
+            secretKeyRef:
+              name: bigip-login
+              key: username
+        - name: BIGIP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: bigip-login
+              key: password
+        command:
+        - /bin/bash
+        - -ec
+        - |
+          apt-get update && apt-get install -y curl jq
+
+          MAC=$(curl -sk -u "${BIGIP_USER}:${BIGIP_PASS}" \
+            "https://10.1.1.4/mgmt/tm/net/tunnels/tunnel/~Common~flannel_vxlan/stats" \
+            | jq -r '.entries[]?.nestedStats.entries.macAddress.description')
+
+          if [ -z "$MAC" ] || [ "$MAC" = "null" ]; then
+            echo "Failed to retrieve MAC address"
+            exit 1
+          fi
+
+          echo "Retrieved MAC: $MAC"
+
+          kubectl annotate node bigip1 \
+            flannel.alpha.coreos.com/public-ip-overwrite="$MAC" \
+            --overwrite
+
+          echo "Node annotation updated successfully"
