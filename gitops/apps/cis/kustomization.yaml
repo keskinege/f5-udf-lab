@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - bigip-ctr.yaml
   - app-services.yaml
+  - f5-as3-declaration.yaml
