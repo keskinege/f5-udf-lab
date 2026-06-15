@@ -52,12 +52,12 @@ spec:
     # ---------------------------------------------------------
     # Site B — Mode B BIG-IP (IngressLink, NGINX IC)
     # ---------------------------------------------------------
-    - dataServerName: /Common/SiteB_Server  # ← Must match GTM Server name
-      dnsRecordType: A
-      loadBalanceMethod: round-robin
-      monitor:
-        type: http
-        send: "GET / HTTP/1.1\r\nHost: coffee.example.com\r\n\r\n"
-        recv: "200"
-        interval: 10
-        timeout: 31
+    #- dataServerName: /Common/SiteB_Server  # ← Must match GTM Server name
+    #  dnsRecordType: A
+    #  loadBalanceMethod: round-robin
+    #  monitor:
+    #    type: http
+    #    send: "GET / HTTP/1.1\r\nHost: coffee.example.com\r\n\r\n"
+    #    recv: "200"
+    #    interval: 10
+    #    timeout: 31
