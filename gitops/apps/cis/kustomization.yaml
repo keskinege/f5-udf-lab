@@ -2,11 +2,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - bigip-ctr.yaml
+  #- bigip-ctr.yaml
   - node.yaml
   - macaddress-job.yaml
   - cis-rbac.yaml
-  - dns.yaml
-  - f5-as-declaration.yaml
+  #- dns.yaml
+  #- f5-as-declaration.yaml
   - f5-cis-crds.yaml
   - bigip-ctr-ingress.yaml
