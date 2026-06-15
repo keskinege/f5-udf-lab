@@ -76,7 +76,10 @@ spec:
 
       # ── Replica / HA ──────────────────────────────────────────────────────
       replicaCount: 1
-
+      
+      # --- Service ClusterIP for BIGIP ----
+      service:
+        type: ClusterIP
       
 
       # ── IngressClass ──────────────────────────────────────────────────────
