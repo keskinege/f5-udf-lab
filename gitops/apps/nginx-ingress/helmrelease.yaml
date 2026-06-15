@@ -177,7 +177,7 @@ spec:
       
     # ── Prometheus metrics / ServiceMonitor ──────────────────────────────────
     prometheus:
-      create: true
+      create: false
       port: 9113
       scheme: http
       service:
