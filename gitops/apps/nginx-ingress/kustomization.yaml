@@ -5,5 +5,5 @@ resources:
   - repo.yaml
   - helmrelease.yaml
   - proxy-protocol.yaml
-  - ingress-service.yaml
+  #- ingress-service.yaml
   - ingress-link.yaml
