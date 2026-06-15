@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: tea
+  namespace: flux-system
+spec:
+ # dependsOn:
+ #   - name: secrets
+  interval: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./gitops/apps/tea
+  prune: true
+  

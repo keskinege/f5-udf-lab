@@ -1,36 +1,36 @@
 # ============================================================
-# Sample App 1: Coffee (v1)
+# Sample App 2: Tea
 # ------------------------------------------------------------
-# Simple NGINX-based web app that returns "coffee" responses.
-# Used to demonstrate basic ingress routing through the
-# BIG-IP → NGINX IC → App pipeline.
+# Second sample app to demonstrate that DevOps can deploy new
+# services that go live IMMEDIATELY through the existing
+# BIG-IP VIP — no ticket, no BIG-IP change needed.
 #
-# Includes: Deployment, Service, and Ingress
-# Uses its own hostname (coffee.example.com) so each app
-# gets an independent Ingress — no mergeable annotations needed.
+# This is the "aha moment" in the demo: deploy tea, and it's
+# reachable through the same VIP within seconds.
+#
+# Uses its own hostname (tea.example.com) — independent Ingress,
+# no coordination with coffee required.
 # ============================================================
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coffee
+  name: tea
   namespace: default
   labels:
-    app: coffee
-    version: v1
+    app: tea
 spec:
-  replicas: 2                          # Two pods for availability
+  replicas: 2
   selector:
     matchLabels:
-      app: coffee
+      app: tea
   template:
     metadata:
       labels:
-        app: coffee
-        version: v1
+        app: tea
     spec:
       containers:
-        - name: coffee
+        - name: tea
           image: nginxdemos/nginx-hello:plain-text
           ports:
             - containerPort: 8080
@@ -44,15 +44,14 @@ spec:
 
 ---
 
-# Service exposes the coffee pods inside the cluster
 apiVersion: v1
 kind: Service
 metadata:
-  name: coffee-svc
+  name: tea-svc
   namespace: default
 spec:
   selector:
-    app: coffee
+    app: tea
   ports:
     - port: 80
       targetPort: 8080
@@ -60,22 +59,22 @@ spec:
 
 ---
 
-# Ingress routes coffee.example.com → coffee-svc
+# Ingress routes tea.example.com → tea-svc
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: coffee-ingress
+  name: tea-ingress
   namespace: default
 spec:
   ingressClassName: nginx
   rules:
-    - host: coffee.example.com
+    - host: tea.example.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: coffee-svc
+                name: tea-svc
                 port:
                   number: 80
