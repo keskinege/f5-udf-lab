@@ -8,3 +8,4 @@ resources:
   - cis-rbac.yaml
   - dns.yaml
   - f5-as-declaration.yaml
+  - f5-cis-crds.yaml
