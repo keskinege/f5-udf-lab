@@ -31,8 +31,8 @@ spec:
   # Re-enable in tandem with nginx-config-proxy-protocol.yaml when
   # demoing WAF or real-client-IP features. Must stay in lockstep:
   # if NGINX isn't expecting PROXY headers, BIG-IP must not send them.
-  iRules:
-     - /Common/proxy_protocol_irule
+  #iRules:
+  #   - /Common/proxy_protocol_irule
 
   # Label selector — must match the NGINX IC service/pods
   selector:
