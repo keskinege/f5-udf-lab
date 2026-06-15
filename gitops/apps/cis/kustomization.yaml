@@ -9,3 +9,4 @@ resources:
   - dns.yaml
   - f5-as-declaration.yaml
   - f5-cis-crds.yaml
+  - bigip-ctr-ingress.yaml

@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - repo.yaml
   - helmrelease.yaml
+  - proxy-protocol.yaml
