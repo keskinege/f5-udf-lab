@@ -7,3 +7,4 @@ resources:
   - macaddress-job.yaml
   - cis-rbac.yaml
   - dns.yaml
+  - f5-as-declaration.yaml

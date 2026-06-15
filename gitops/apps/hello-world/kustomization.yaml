@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
-  - f5-as3-declaration.yaml
+  #- f5-as3-declaration.yaml
