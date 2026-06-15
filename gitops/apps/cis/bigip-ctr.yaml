@@ -59,7 +59,7 @@ spec:
             - "--bigip-partition=kubernetes"           # ← Partition CIS manages
             - "--pool-member-type=cluster"             # Pod IPs via VXLAN
             - "--flannel-name=/Common/flannel_vxlan"       # ← VXLAN tunnel on BIG-IP
-            - "--custom-resource-mode=false"            # Watch Ingress + AS3 ConfigMaps
+            - "--custom-resource-mode=true"            # Watch Ingress + AS3 ConfigMaps
             - "--insecure=true"                        # Skip TLS verify (lab only!)
             - "--log-level=DEBUG"
             - "--agent=as3"                            # Use AS3 for declarations
@@ -71,9 +71,9 @@ spec:
             # so you'll need to change the flag above from false to true
             # and use VirtualServer CRDs instead of Ingress/AS3
             # -------------------------------------------------------
-            - "--gtm-bigip-url=https://10.1.1.6"    # ← GTM BIG-IP (same as LTM for lab)
-            - "--gtm-bigip-username=$(BIGIP_USERNAME)"
-            - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
+            - "--gtm-bigip-url=https://10.1.1.4"    # ← GTM BIG-IP (same as LTM for lab)
+            - "--gtm-bigip-username=admin"
+            - "--gtm-bigip-password=Akk12341234!!"
           resources:
             requests:
               cpu: 100m

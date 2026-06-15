@@ -1,0 +1,187 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# NGINX Plus Ingress Controller — Production HelmRelease
+#
+# Features enabled:
+#   • NGINX Plus image (private-registry.nginx.com)
+#   • JWT runtime license (nplus-license secret)
+#   • IngressClass: nginx (default)
+#   • NGINX Plus dashboard on :8080/dashboard.html (cluster-internal)
+#   • Prometheus metrics
+#     Place config_set.json and compiled_policy.tgz on the PVC (see nap/config_set.json).
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+spec:
+  
+  interval: 1h
+
+  # ── Source ────────────────────────────────────────────────────────────────
+  chartRef:
+    kind: OCIRepository
+    name: nginx-ingress
+    namespace: flux-system
+
+  # ── Install / Upgrade behaviour ───────────────────────────────────────────
+  install:
+    crds: CreateReplace       # install NIC CRDs (VirtualServer, Policy, etc.)
+    createNamespace: false    # namespace created by kustomization
+    remediation:
+      retries: 3
+
+  upgrade:
+    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+
+  # ── Values ────────────────────────────────────────────────────────────────
+  values:
+    # ── NGINX Agent ────────────────────────────────────────────────────
+    nginxAgent:
+      ## Enables NGINX Agent.
+      enable: false
+      logLevel: "info"
+      instanceManager:
+        host: "+"
+        tls:
+          enabled: true
+          skipVerify: true
+    napMonitoring:
+    collectorBufferSize: 50000
+    processorBufferSize: 50000
+
+    # ── NGINX Plus image ────────────────────────────────────────────────────
+    controller:
+      nginxplus: true
+  #    enableOIDC: true
+      enableSnippets: true
+      
+      
+      image:
+    
+        repository: private-registry.nginx.com/nginx-ic-nap-v5/nginx-plus-ingress
+        tag: "5.5.0-alpine-fips"
+        pullPolicy: IfNotPresent
+      
+      serviceAccount:
+        imagePullSecretName: regcred  
+
+      # Runtime JWT license (required since NIC 4.0)
+      mgmt:
+        licenseTokenSecretName: nplus-license
+
+      # ── Replica / HA ──────────────────────────────────────────────────────
+      replicaCount: 1
+
+      
+
+      # ── IngressClass ──────────────────────────────────────────────────────
+      #ingressClass: nginx
+      ingressClassResource:
+        name: nginx
+        enabled: true
+        default: true          # not the cluster default IngressClass
+        controllerValue: "k8s.io/nginx-ingress"
+
+
+      # ── TLS / SSL passthrough ──────────────────────────────────────────────
+      enableSSLPassthrough: true   # needed for backends doing their own TLS
+
+      # ── NGINX Plus API / dashboard (localhost only) ───────────────────────
+      nginxStatus:
+        enable: true
+        port: 8080
+       # allowCidrs: "127.0.0.1,::1"
+        # Accessible via: kubectl port-forward svc/nginx-plus-ic-nginx-ingress 8080:8080
+        # Then open: http://127.0.0.1:8080/dashboard.html or http://127.0.0.1:8080/api/
+
+      # ── NGINX global config (ConfigMap) ───────────────────────────────────
+      config:
+        entries:
+          # Performance
+          worker-processes: "auto"
+          worker-connections: "8192"
+          keepalive-timeout: "65"
+          keepalive-requests: "1000"       
+          resolver-addresses: "10.43.0.10"
+          resolver-valid: "5s"
+          resolver-ipv6: "false"
+
+          # Logging — JSON structured for easier parsing
+          log-format: |
+            {"time":"$time_iso8601","remote_addr":"$remote_addr",
+            "x_forwarded_for":"$http_x_forwarded_for",
+            "request":"$request","status":"$status",
+            "bytes_sent":"$bytes_sent","request_time":"$request_time",
+            "upstream_response_time":"$upstream_response_time",
+            "host":"$host","upstream":"$upstream_addr",
+            "server_name":"$server_name"}
+          access-log-off: "false"
+
+          # Security headers (can also be set per-Ingress via annotations)
+          hide-headers: "X-Powered-By,Server"
+          server-tokens: "off"
+
+          # Proxy
+          proxy-connect-timeout: "10s"
+          proxy-read-timeout: "60s"
+          proxy-send-timeout: "60s"
+          proxy-buffer-size: "16k"
+          proxy-buffers: "4 16k"
+
+          # Body / upload size
+          proxy-body-size: "10m"
+
+          # HTTP/2
+          #http2: "on"
+
+          # Real IP from Tailscale CGNAT range (100.64.0.0/10)
+          real-ip-header: "X-Forwarded-For"
+          set-real-ip-from: "100.64.0.0/10"
+
+      # ── Prometheus metrics ─────────────────────────────────────────────────
+      enableLatencyMetrics: true
+
+      # ── Resources (homelab sizing — adjust for prod) ───────────────────────
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          cpu: 1000m
+          memory: 512Mi
+
+      # ── Readiness / Liveness ──────────────────────────────────────────────
+      readinessProbe:
+        httpGet:
+          path: /nginx-ready
+          port: 8081
+        initialDelaySeconds: 10
+        periodSeconds: 5
+        failureThreshold: 3
+      livenessProbe:
+        httpGet:
+          path: /nginx-ready
+          port: 8081
+        initialDelaySeconds: 15
+        periodSeconds: 10
+        failureThreshold: 5
+
+      
+    # ── Prometheus metrics / ServiceMonitor ──────────────────────────────────
+    prometheus:
+      create: true
+      port: 9113
+      scheme: http
+      service:
+        create: true
+      #serviceMonitor:
+      #  create: true              # requires prometheus-operator CRDs
+      #  namespace: monitoring     # match your Prometheus namespace
+      #  labels:
+      #    release: kube-prometheus-stack   # match your Prometheus selector label
+    
