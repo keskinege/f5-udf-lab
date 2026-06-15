@@ -6,3 +6,4 @@ resources:
   - helmrelease.yaml
   - proxy-protocol.yaml
   - ingress-service.yaml
+  - ingress-link.yaml
