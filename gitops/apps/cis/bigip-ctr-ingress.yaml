@@ -60,9 +60,9 @@ spec:
             - "--flannel-name=/Common/flannel_vxlan"       # ← VXLAN tunnel on BIG-IP
             - "--custom-resource-mode=true"             # Watch CRDs (IngressLink, VS)
             - "--insecure=true"                        # Skip TLS verify (lab only!)
-            - "--log-level=INFO"
+            - "--log-level=DEBUG"
             - "--namespace=nginx-ingress"              # Watch NGINX IC namespace
-            #- "--namespace=default"                    # Watch default namespace
+            - "--namespace=default"                    # Watch default namespace
             # -------------------------------------------------------
             # GSLB / ExternalDNS — uncomment these for GSLB demos
             # GTM can be on the same or different BIG-IP as LTM
