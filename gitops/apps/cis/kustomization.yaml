@@ -6,3 +6,4 @@ resources:
   - node.yaml
   - macaddress-job.yaml
   - bigip-ctr.yaml
+  - dns.yaml
