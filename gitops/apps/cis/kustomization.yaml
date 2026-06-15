@@ -5,3 +5,4 @@ resources:
   - bigip-ctr.yaml
   - node.yaml
   - macaddress-job.yaml
+  - bigip-ctr.yaml
