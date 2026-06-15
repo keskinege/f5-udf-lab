@@ -6,3 +6,5 @@ metadata:
 spec:
   interval: 5m
   url:  oci://ghcr.io/nginx/charts/nginx-ingress 
+  ref:
+    tag: 2.5.3
