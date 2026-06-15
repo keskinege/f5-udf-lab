@@ -54,7 +54,7 @@ data:
                             "http"
                         ],
                         "members": [
-                            {
+                            { "shareNodes": true,
                                 "servicePort": 8080,
                                 "serverAddresses": []
                             }
