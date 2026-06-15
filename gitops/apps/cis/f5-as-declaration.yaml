@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: f5-as3-declaration
+  namespace: default
+  labels:
+    f5type: virtual-server
+    as3: "true"
+data:
+  template: |
+    {
+        "class": "AS3",
+        "declaration": {
+            "class": "ADC",
+            "schemaVersion": "3.18.0",
+            "id": "cis-nginx-lab-standalone-2apps",
+            "label": "CIS Standalone - Two Apps",
+            "remark": "Two BIG-IP VIPs pointing directly to app pods",
+            "AS3": {
+                "class": "Tenant",
+                "A1": {
+                    "class": "Application",
+                    "template": "http",
+                    "serviceMain": {
+                        "class": "Service_HTTP",
+                        "virtualAddresses": [
+                            "10.1.20.10"
+                        ],
+                        "virtualPort": 80,
+                        "pool": "web_pool"
+                    },
+                    "web_pool": {
+                        "class": "Pool",
+                        "monitors": [
+                            "http"
+                        ],
+                        "members": [
+                            { "shareNodes": true,
+                                "servicePort": 8080,
+                                "serverAddresses": []
+                            }
+                        ]
+                    }
+                },
+                "A2": {
+                    "class": "Application",
+                    "template": "http",
+                    "serviceMain": {
+                        "class": "Service_HTTP",
+                        "virtualAddresses": [
+                            "10.1.20.10"
+                        ],
+                        "virtualPort": 8081,
+                        "pool": "web_pool2"
+                    },
+                    "web_pool2": {
+                        "class": "Pool",
+                        "monitors": [
+                            "http"
+                        ],
+                        "members": [
+                            { "shareNodes": true,
+                                "servicePort": 8080,
+                                "serverAddresses": []
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
