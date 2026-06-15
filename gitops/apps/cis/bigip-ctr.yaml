@@ -71,9 +71,9 @@ spec:
             # so you'll need to change the flag above from false to true
             # and use VirtualServer CRDs instead of Ingress/AS3
             # -------------------------------------------------------
-            # - "--gtm-bigip-url=https://10.1.1.4"    # ← GTM BIG-IP (same as LTM for lab)
-            # - "--gtm-bigip-username=$(BIGIP_USERNAME)"
-            # - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
+            - "--gtm-bigip-url=https://10.1.1.4"    # ← GTM BIG-IP (same as LTM for lab)
+            - "--gtm-bigip-username=$(BIGIP_USERNAME)"
+            - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
           resources:
             requests:
               cpu: 100m
