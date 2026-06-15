@@ -61,7 +61,7 @@ spec:
             - "--flannel-name=/Common/flannel_vxlan"       # ← VXLAN tunnel on BIG-IP
             - "--custom-resource-mode=false"            # Watch Ingress + AS3 ConfigMaps
             - "--insecure=true"                        # Skip TLS verify (lab only!)
-            - "--log-level=INFO"
+            - "--log-level=DEBUG"
             - "--agent=as3"                            # Use AS3 for declarations
             - "--log-as3-response=true"                # Log AS3 responses (debug)
             - "--as3-validation=true"                  # Validate AS3 before sending

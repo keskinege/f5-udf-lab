@@ -1,0 +1,30 @@
+# Second hello-world app deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: f5-hello-world-web2
+  namespace: default
+  labels:
+    app: f5-hello-world-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: f5-hello-world-2
+  template:
+    metadata:
+      labels:
+        app: f5-hello-world-2
+    spec:
+      containers:
+        - name: f5-hello-world-2
+          image: f5devcentral/f5-hello-world
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

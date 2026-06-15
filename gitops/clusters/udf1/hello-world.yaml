@@ -10,6 +10,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./gitops/apps/single-app
+  path: ./gitops/apps/hello-world
   prune: true
   
