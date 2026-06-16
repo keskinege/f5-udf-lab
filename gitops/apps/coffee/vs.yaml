@@ -1,0 +1,38 @@
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  name: coffee-vs
+  namespace: default
+  labels:
+    f5cr: "true"                      # CIS watches resources with this label
+spec:
+  # BIG-IP partition — must match CIS --bigip-partition arg
+  partition: kubernetes
+
+  # FQDN — MUST match the domainName in externaldns-coffee-modeB.yaml
+  host: coffee.example.com
+
+  # Dedicated VIP for coffee's GSLB path. Pick a free IP in the
+  # BIG-IP's client-facing subnet (NOT the IngressLink VIP).
+  virtualServerAddress: "10.1.20.60"   # ← Your free BIG-IP VIP
+
+  # HTTP listener port (lab demo — for production, add a TLSProfile
+  # reference and set virtualServerHTTPSPort to 443 to match the
+  # IngressLink VS)
+  virtualServerHTTPPort: 80
+
+  # Pool definition — NGINX IC is the pool target. CIS populates
+  # the pool with NGINX IC pod IPs via the Flannel VXLAN overlay,
+  # same way IngressLink does. NGINX IC then matches the Host
+  # header and proxies internally to coffee-svc.
+  pools:
+    - path: /
+      service: nginx-ingress-controller   # NGINX IC Service (verify name: kubectl get svc -n nginx-ingress)
+      serviceNamespace: nginx-ingress     # cross-namespace reference — CIS must also watch this namespace
+      servicePort: 80                     # NGINX IC HTTP listener (443 would require TLS setup on this VS)
+      monitor:
+        type: http
+        send: "GET / HTTP/1.1\r\nHost: coffee.example.com\r\n\r\n"
+        recv: ""                          # empty recv matches any response — NGINX IC returns 404 if coffee Ingress isn't deployed
+        interval: 10
+        timeout: 31
