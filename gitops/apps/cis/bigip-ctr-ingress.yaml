@@ -67,9 +67,9 @@ spec:
             # GSLB / ExternalDNS — uncomment these for GSLB demos
             # GTM can be on the same or different BIG-IP as LTM
             # -------------------------------------------------------
-            # - "--gtm-bigip-url=https://10.1.1.6"    # ← GTM BIG-IP (same as LTM for lab)
-            # - "--gtm-bigip-username=$(BIGIP_USERNAME)"
-            # - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
+            - "--gtm-bigip-url=https://10.1.1.4"    # ← GTM BIG-IP (same as LTM for lab)
+            - "--gtm-bigip-username=$(BIGIP_USERNAME)"
+            - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
           resources:
             requests:
               cpu: 100m
