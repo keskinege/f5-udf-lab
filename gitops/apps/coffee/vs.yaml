@@ -26,8 +26,8 @@ spec:
   # the pool with NGINX IC pod IPs via the Flannel VXLAN overlay,
   # same way IngressLink does. NGINX IC then matches the Host
   # header and proxies internally to coffee-svc.
-  pools:
-    - path: /
+  defaultPool:
+      reference: service
       service: nginx-ingress-controller   # NGINX IC Service (verify name: kubectl get svc -n nginx-ingress)
       serviceNamespace: nginx-ingress     # cross-namespace reference — CIS must also watch this namespace
       servicePort: 80                     # NGINX IC HTTP listener (443 would require TLS setup on this VS)
