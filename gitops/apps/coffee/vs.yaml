@@ -20,7 +20,8 @@ spec:
   # reference and set virtualServerHTTPSPort to 443 to match the
   # IngressLink VS)
   virtualServerHTTPPort: 80
-
+  iRules:
+    - /Common/proxy_protocol_irule
   # Pool definition — NGINX IC is the pool target. CIS populates
   # the pool with NGINX IC pod IPs via the Flannel VXLAN overlay,
   # same way IngressLink does. NGINX IC then matches the Host
@@ -31,6 +32,8 @@ spec:
       serviceNamespace: nginx-ingress     # cross-namespace reference — CIS must also watch this namespace
       servicePort: 80                     # NGINX IC HTTP listener (443 would require TLS setup on this VS)
       monitor:
-        type: tcp
+        type: http
+        send: "GET / HTTP/1.1\r\nHost: coffee.example.com\r\n\r\n"
+        recv: ""                          # empty recv matches any response — NGINX IC returns 404 if coffee Ingress isn't deployed
         interval: 10
         timeout: 31
