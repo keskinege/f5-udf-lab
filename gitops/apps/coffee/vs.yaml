@@ -31,8 +31,6 @@ spec:
       serviceNamespace: nginx-ingress     # cross-namespace reference — CIS must also watch this namespace
       servicePort: 80                     # NGINX IC HTTP listener (443 would require TLS setup on this VS)
       monitor:
-        type: http
-        send: "GET / HTTP/1.1\r\nHost: coffee.example.com\r\n\r\n"
-        recv: ""                          # empty recv matches any response — NGINX IC returns 404 if coffee Ingress isn't deployed
+        type: tcp
         interval: 10
         timeout: 31
