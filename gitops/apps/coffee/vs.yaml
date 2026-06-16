@@ -27,11 +27,12 @@ spec:
   # same way IngressLink does. NGINX IC then matches the Host
   # header and proxies internally to coffee-svc.
   defaultPool:
-      reference: service
-      service: nginx-ingress-controller   # NGINX IC Service (verify name: kubectl get svc -n nginx-ingress)
-      serviceNamespace: nginx-ingress     # cross-namespace reference — CIS must also watch this namespace
-      servicePort: 80                     # NGINX IC HTTP listener (443 would require TLS setup on this VS)
-      monitor:
-        type: tcp
+    reference: service
+    service: nginx-ingress-controller
+    serviceNamespace: nginx-ingress
+    servicePort: 80
+    loadBalancingMethod: round-robin
+    monitors:             # ← plural, list
+      - type: tcp
         interval: 10
         timeout: 31
