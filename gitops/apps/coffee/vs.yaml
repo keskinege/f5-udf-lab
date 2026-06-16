@@ -14,7 +14,7 @@ spec:
 
   # Dedicated VIP for coffee's GSLB path. Pick a free IP in the
   # BIG-IP's client-facing subnet (NOT the IngressLink VIP).
-  virtualServerAddress: "10.1.20.60"   # ← Your free BIG-IP VIP
+  virtualServerAddress: "10.1.10.60"   # ← Your free BIG-IP VIP
 
   # HTTP listener port (lab demo — for production, add a TLSProfile
   # reference and set virtualServerHTTPSPort to 443 to match the
