@@ -34,7 +34,7 @@ spec:
     # ---------------------------------------------------------
     # Site B only — Mode B BIG-IP (IngressLink + VirtualServer)
     # ---------------------------------------------------------
-    - dataServerName: /Common/SiteB_Server   # ← Must match GTM Server name
+    - dataServerName: /Common/SiteA_Server   # ← Must match GTM Server name
       dnsRecordType: A
       loadBalanceMethod: round-robin
       monitor:
